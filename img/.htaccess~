@@ -1,0 +1,3 @@
+# disable directory browsing
+deny from all
+

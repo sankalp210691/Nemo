@@ -1,0 +1,106 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Mar 7, 2014, 10:32:04 PM
+    Author     : sankalp
+*/
+
+#filler{
+    padding-top:80px;
+    margin:0 auto;
+    width:95%;
+    height:100%;
+    padding-left:0;
+    padding-right:0; 
+    color:#444;
+}
+
+.dshadow{
+    border-radius:2px;
+    -webkit-box-shadow:  0 0 13px #666;
+    -moz-box-shadow:  0 0 13px #666;
+    box-shadow:  0 0 13px #666;
+    -o-box-shadow: 0 0 13px #666;
+}
+
+#trenddiv{
+    clear:both;
+    width:100%;
+}
+
+#tpostdiv{
+    width:80%;
+    width:calc(80% - 2.5em);
+    width:expression(80% - 2.5em);
+    min-width:80%;
+    height:420px;
+    padding:10px 20px;
+    float:left;
+    background:white;
+}
+
+#ttagdiv{
+    float:left;
+    background:white;
+    height:420px;
+    width:20%;
+    width:calc(20% - 6.25em);
+    width:expression(20% - 6.25em);
+    padding:10px 20px;
+    margin-left:20px;
+}
+
+#tgal{
+    margin-top:10px;
+    width:100%;
+}
+
+#bpost{
+    width:50%;
+    width:calc(50% - .625em);
+    width:expression(50% - .625em);
+}
+
+#mpost,#spostcontainer{
+    margin-left:5px;
+    width:25%;
+}
+
+#uspost,#lspost{
+    width:100%;
+    height:50%;
+    height:calc(50% - 0.15625em);
+}
+
+#uspost{
+    margin-bottom:5px;
+}
+
+.tpost{
+    position:relative;
+    background-color: #f2f2f2;
+    background-size:cover;
+    background-repeat:no-repeat;
+    background-position: top;
+    outline:1px solid #ccc;
+}
+
+.tpostinfo{
+    background:black;
+    opacity:0.9;
+    padding:10px;
+    color:white;
+    width:100%;
+    width:calc(100% - 1.25em);
+    width:expression(100% - 1.25em);
+    height:65px;
+    position:absolute;
+    bottom:0;
+    left:0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

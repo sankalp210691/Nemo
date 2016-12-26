@@ -1,0 +1,689 @@
+<?php
+session_start();
+if (!isset($_GET["id"])) {
+    header("location:badpage.html");
+    return;
+}
+$uid = trim(stripslashes(preg_replace("/#.*?\n/", "\n", preg_replace("/\/*.*?\*\//", "", preg_replace("/\/\/.*?\n/", "\n", preg_replace("/<!--.*?-->/", "", str_replace('"', "", str_replace("'", "", $_GET["id"]))))))));
+if (strpos($uid, ".") != false || is_numeric($uid) == false || $uid < 1) {
+    header("location:badpage.html");
+    return;
+}
+
+$id = $_SESSION["id"];
+$_SESSION["id"] = $id;
+//Keep the above part same, everywhere
+require "db/DBConnect.php";
+include "model/UserModel.php";
+include "controller/UserController.php";
+include "model/FriendModel.php";
+include "controller/FriendController.php";
+include "supporter/FriendSupporter.php";
+include "model/TagsModel.php";
+include "controller/TagsController.php";
+include "supporter/TagsSupporter.php";
+
+$db_connection = new DBConnect("mysqli", "nemo", "", "", "");
+$persistent_connection = $db_connection->getCon();
+if ($uid != $id) {
+    $self = 0;
+    $decArray = areFriends($uid, $id);
+    if ($decArray[0] == false) {    //Public Profile
+        $db_connection->mysqli_connect_close();
+        header("location:pubPr.php?id=$uid");
+    } else {
+        $usercon = new UserController();
+        $user = $usercon->getByPrimaryKey($id, array("first_name", "last_name", "profile_pic"), null, $persistent_connection);
+        $first_name = $user->getFirst_name();
+        $last_name = $user->getLast_name();
+        $profile_pic = $user->getProfile_pic();
+        if ($profile_pic == null || strlen($profile_pic) == 0) {
+            $profile_pic = "img/default_profile_pic.jpg";
+        }
+        $blur_profile_pic = substr($profile_pic, 0, strrpos($profile_pic, "/")) . "/blur_" . substr($profile_pic, strrpos($profile_pic, "/") + 1);
+
+        $pusercon = new UserController();
+        $puser = $pusercon->getByPrimaryKey($uid, array("first_name", "last_name", "profile_pic", "email_id", "address", "ph_no", "sets", "interests", "friends", "gender", "rel_status", "nick", "dob"), null, $persistent_connection);
+        $pfirst_name = $puser->getFirst_name();
+        $plast_name = $puser->getLast_name();
+        $pprofile_pic = $puser->getProfile_pic();
+        $psets = $puser->getSets();
+        $pfriends = $puser->getFriends();
+        $pinterests = $puser->getInterests();
+        if ($pprofile_pic == null || strlen($pprofile_pic) == 0) {
+            $pprofile_pic = "img/default_profile_pic.jpg";
+        }
+        $pblur_profile_pic = substr($pprofile_pic, 0, strrpos($pprofile_pic, "/")) . "/pblur_" . substr($pprofile_pic, strrpos($pprofile_pic, "/") + 1);
+    }
+} else {
+    $pusercon = new UserController();
+    $puser = $pusercon->getByPrimaryKey($id, array("first_name", "last_name", "profile_pic", "email_id", "address", "ph_no", "sets", "interests", "friends", "gender", "rel_status", "nick", "dob"), null, $persistent_connection);
+    $pfirst_name = $first_name = $puser->getFirst_name();
+    $plast_name = $last_name = $puser->getLast_name();
+    $pprofile_pic = $profile_pic = $puser->getProfile_pic();
+    $psets = $puser->getSets();
+    $pfriends = $puser->getFriends();
+    $pinterests = $puser->getInterests();
+    if ($profile_pic == null || strlen($profile_pic) == 0) {
+        $pprofile_pic = $profile_pic = "img/default_profile_pic.jpg";
+    }
+    $pblur_profile_pic = $blur_profile_pic = substr($profile_pic, 0, strrpos($profile_pic, "/")) . "/blur_" . substr($profile_pic, strrpos($profile_pic, "/") + 1);
+    $self = 1;
+}
+$db_connection->mysqli_connect_close();
+?>
+<!DOCTYPE HTML>
+<html style="height:100%">
+    <head>
+        <style>
+            #container{
+                padding-top:50px;    
+            }
+
+            #basic{
+                position:fixed;
+                float:left;
+                width:19%;
+                height:100%;
+                padding-top:40px;
+            }
+
+            #profile_pic_div{
+                width:183px;
+                height:183px;
+                margin-left:40px;
+                margin-right:40px;
+                box-shadow: inset 0 0 15px #444;
+                -o-box-shadow: inset 0 0 15px #444;
+                -webkit-box-shadow: inset  0 0 15px #444;
+                -moz-box-shadow: inset 0 0 15px #444;
+                -ms-filter: inset "progid: insetDXImageTransform.Microsoft.Shadow(color=#444,strength=10)";
+            }
+
+            #profile_pic_div:hover{
+                cursor: pointer;
+            }
+
+            #profile_pic{
+                position: relative;
+                z-index: -1;
+                width:100%;
+            }
+
+            #menu_div{
+                margin-top:30px;
+                width: 257px;
+                border-top: 1px solid #ccc;
+            }
+
+            #menu li{
+                color:#666;
+                font-weight: bold;
+                padding:10px;
+                font-family: "Arial";
+                font-size:12px;
+                padding:20px;
+                padding-left:40px;
+                border-bottom: 1px solid #ccc;
+            }
+
+            #menu li:hover{
+                background:#007dff;
+                color:white;
+                cursor:pointer;
+            }
+
+            #main{
+                margin-left:260px;
+                float:left;
+                width:80%;
+                min-height: 100%;
+                padding-top:10px;
+                background: white;
+
+                box-shadow: -7px 0 5px -5px #aaa;
+                -o-box-shadow: -7px 0 5px -5px #aaa;
+                -webkit-box-shadow:  -7px 0 5px -5px #aaa;
+                -moz-box-shadow: -7px 0 5px -5px #aaa;
+                -ms-filter: "progid:DXImageTransform.Microsoft.Shadow(color=#aaa,strength=5)";
+            }
+
+            #name{
+                color:black;
+                font-size:50px;
+                margin-bottom: 10px;
+                margin-top:-10px;
+                width:100%;
+                background:#f6f6f6;
+                padding:20px;
+                border-bottom: 1px solid #ccc;
+            }
+
+            #inline_menu{
+                font-size:30px;
+                color:#999;
+                padding-left:20px;
+            }
+
+            #inline_menu li{
+                margin-right:20px;
+            }
+
+            #inline_menu li:hover{
+                color:black;
+                cursor:pointer;
+            }
+
+            .cur_tab{
+                border-bottom:3px solid #007dff;
+                color:black;
+            }
+
+            h2{
+                color:#444;
+            }
+
+            .album{
+                display:table;
+                float:left;
+                margin-right:10px;
+                margin-left:10px;
+                width:240px;
+                height:135px;
+
+                border:1px solid #ccc;
+                background:white;
+            }
+
+            .album:hover{
+                cursor:pointer;
+                box-shadow: 0 0 5px  #777;
+                -o-box-shadow: 0 0 5px  #777;
+                -webkit-box-shadow:  0 0 5px  #777;
+                -moz-box-shadow: 0 0 5px  #777;
+                -ms-filter: "progid:DXImageTransform.Microsoft.Shadow(color=#777,strength=5)";
+            }
+
+            .aimg{
+                width:100%;
+                display:table;
+                overflow:hidden;
+            }
+
+            .ainfo{
+                padding:10px;
+                width:100%;
+                color:#444;
+            }
+
+            .img_div{
+                float:left;
+                width:160px;
+                height:120px;
+                border:1px solid #ccc;
+                overflow:hidden;
+                margin:10px;
+                background:#f6f6f6;
+            }
+
+            #cpp{
+                display:none;
+                cursor:pointer;
+                position:absolute;
+                margin-top:-48px;
+                background:black;
+                opacity:0.9;
+                padding-top:15px;
+                padding-bottom:15px;
+                color:white;
+            }
+
+            #cpp:hover{
+                text-shadow: 0 0 4px #aaa;
+            }
+        </style>
+        <?php
+        if ($uid == $id) {
+            ?>
+            <title><?php echo $first_name . " " . $last_name ?></title>
+            <?php
+        } else {
+            ?>
+            <title><?php echo $pfirst_name . " " . $plast_name ?></title>
+            <?php
+        }
+        ?>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link href="css/special.css" rel="stylesheet" type='text/css'>
+        <link href='http://fonts.googleapis.com/css?family=Rancho' rel='stylesheet' type='text/css'>
+
+        <script src="js/jquery-latest.js"></script>
+        <script type="text/javascript" src="js/jquery.masonry.min.js"></script>
+        <script src="js/special.js"></script>
+        <script type="text/javascript">
+            var user_id="<?php echo $id ?>"
+            var user_name = "<?php echo $first_name . ' ' . $last_name ?>"
+            var profile_pic = "<?php echo $profile_pic ?>"
+            var blur_profile_pic = $("<img style='width:30px;height:30px;'>")
+            blur_profile_pic.attr({
+                "src":"<?php echo $blur_profile_pic ?>"
+            })
+            
+            function getUserFeed(e,start,limit){
+                var center = $("<center id='post_loader'>")
+                $.ajax({
+                    url:"manager/PostManager.php",
+                    cache:false,
+                    type:"GET",
+                    dataType:"json",
+                    data:"req=get_user_feed&user_id=<?php echo $uid ?>&start="+start+"&limit="+limit,
+                    beforeSend:function(){
+                        var feed_loader = $("<img style='width:50px;margin-top:80px'>")
+                        feed_loader.attr("src","img/massive_ajax_loader.gif")
+                        center.html(feed_loader)
+                        e.append(center)
+                    },
+                    success:function(data){
+                        center.remove()
+                        var data_length = data.length,i
+                        for(i=0;i<data_length;i++){
+                            var post = new PostTile(data[i])
+                            post.arrangeTile(e,4,"append")
+                        }
+                    },
+                    error:function(e,f){
+                        alertBox("Some error occured. Please try again later.")
+                    }
+                })
+            }
+            
+            function getUserAlbums(e,start,limit){
+                var center = $("<center id='post_loader'>")
+                $.ajax({
+                    url:"manager/PostManager.php",
+                    cache:false,
+                    type:"GET",
+                    dataType:"json",
+                    data:"req=get_user_albums&user_id=<?php echo $uid ?>&start="+start+"&limit="+limit,
+                    beforeSend:function(){
+                        var feed_loader = $("<img style='width:50px;margin-top:80px'>")
+                        feed_loader.attr("src","img/massive_ajax_loader.gif")
+                        center.html(feed_loader)
+                        e.append(center)
+                    },
+                    success:function(data){
+                        center.remove()
+                        var data_length = data.length,i
+                        for(i=0;i<data_length;i++){
+                            var album = $("<div id='a"+data[i].id+"' class='album'>")
+                            var album_img_div = $("<div class='aimg'>")
+                            var album_info_div = $("<div class='ainfo'>")
+                            var img = $("<img src='"+data[i].src+"' width='100%'>")
+                            album_img_div.html(img)
+                            if(i==0)
+                                album_info_div.html("<b>Wall Photos</b>")
+                            album.html(album_img_div)
+                            album.append(album_info_div)
+                            e.append(album)
+                            
+                            album.click(function(){
+                                $.ajax({
+                                    url:"manager/PostManager.php",
+                                    cache:false,
+                                    type:"GET",
+                                    dataType:"json",
+                                    data:"req=get_album_photos&user_id=<?php echo $uid ?>&album_id="+album.attr("id").substr(1)+"&start=0&limit=20",
+                                    beforeSend:function(){
+                                        var feed_loader = $("<img style='width:50px;margin-top:80px'>")
+                                        feed_loader.attr("src","img/massive_ajax_loader.gif")
+                                        center.html(feed_loader)
+                                        e.html(center)
+                                    },success:function(data){
+                                        center.remove()
+                                        var data_length = data.length,i
+                                        for(i=0;i<data_length;i++){
+                                            var img_div = $("<div class='img_div' id='i"+data[i].id+"'>")
+                                            if(data[i].height>data[i].width)
+                                                var img = $("<img src='"+data[i].src+"' width='100%'>")
+                                            else
+                                                var img = $("<img src='"+data[i].src+"' height='100%'>")
+                                            e.append(img_div)
+                                            img_div.html(img)
+                                        }
+                                    },error:function(e,f){
+                                        center.remove()
+                                        alertBox("Some error occured. Please try again later.")
+                                    }
+                                })
+                            })
+                        }
+                    },
+                    error:function(e,f){
+                        center.remove()
+                        alertBox("Some error occured. Please try again later.")
+                    }
+                })
+            }
+            
+<?php
+if ($uid != $id) {
+    ?>
+            var puser_id = "<?php echo $uid ?>"     
+            var puser_name = "<?php echo $pfirst_name . ' ' . $plast_name ?>"
+            var pprofile_pic = "<?php echo $pprofile_pic ?>"
+            var pblur_profile_pic = $("<img>")
+            pblur_profile_pic.attr({
+                "src":"<?php echo $pblur_profile_pic ?>"
+            })
+<?php } else { ?>
+        var crop_x,crop_y,crop_x1,crop_y1,crop_h,crop_w,resize_factor
+        function change_profile_pic(){
+            var file = document.getElementById("cpp_input").files[0]
+            var reader = new FileReader()
+            // init the reader event handlers
+            reader.onload =(function(e){
+                var fileName=file.name
+                var result = e.target.result
+                $.ajax({
+                    url:"req/uploader.php",
+                    type:"post",
+                    cache:false,
+                    dataType:"json",
+                    data:"req=upload&name="+fileName+"&value="+result+"&record=0",
+                    beforeSend:function(){
+                        $("#cpp_input").prop("disabled",true)
+                        $("#cpp_t").html("<img src='img/ajax_loader_horizontal.gif'>")
+                    },
+                    success:function(data){
+                        if(data[0]==-1){
+                            alertBox("Invalid file")
+                            return
+                        }
+                        var img = $("<img>")
+                        img.attr("src",data.photo_address)
+                        var w = data.photo_width
+                        var h = data.photo_height
+                        cropBox(img,w,h,"profile_pic",$("#profile_pic"))
+                        $("#cpp_t").html("Change Profile Pic")
+                    },error:function(e,f){
+                        $("#cpp_input").prop("disabled",false)
+                        $("#cpp_t").html("Change Profile Pic")
+                    }
+                })
+            })
+            reader.readAsDataURL(file)
+        }
+
+        function cropBox(img,w,h,purpose,e){
+            var cropBox = new Box("crop_box","40","50")
+            cropBox.heading = "Profile pic"
+            cropBox.createOverlay(0)
+            var main_body = cropBox.createBox()
+            main_body.width(main_body.parent().width())
+            main_body.height(main_body.parent().height())
+            var pic_area = $("<div id='pic_area' style='width:100%;height:75%;border-bottom:1px solid #ccc;'>")
+            var b_area = $("<div id='b_area' style='width:100%;height:24.5%;'>")
+            var save = $("<input type='button' class='bbutton' value='Save' style='width:80px;float:right;margin:10px;'>")
+            var cancel = $("<input type='button' class='wbutton' value='Cancel' style='width:80px;float:right;margin:10px;'>")
+            cancel.click(function(){
+                cropBox.closeBox()
+            })
+            save.click(function(){
+                var cords = [crop_x,crop_y,crop_x2,crop_y2,crop_w,crop_h]
+                $.ajax({
+                    url:"manager/UserManager.php",
+                    cache:false,
+                    type:"post",
+                    data:"req=change_profile_pic&user_id=<?php echo $id ?>&radd="+img.attr("src")+"&coords="+encodeURIComponent(JSON.stringify(cords)),
+                    beforeSend:function(){
+                        save.prop("disabled",true)
+                        cancel.prop("disabled",true)
+                        b_area.html("<img src='img/ajax_loader_horizontal.gif' style='float:right;margin:10px;'>")
+                    },success:function(address){
+                        if(address==-1){
+                            alertBox("Some error occured. Please try again later.")
+                            b_area.html(save)
+                            b_area.append(cancel)
+                            save.prop("disabled",false)
+                            cancel.prop("disabled",false)
+                        }
+                        $("#profile_pic").attr("src",address)
+                        var sp = $(".uimg img")
+                        sp.attr("src",address)
+                        sp.width(30)
+                        sp.height(30)
+                        cropBox.closeBox()
+                    },error:function(e,f){
+                        alertBox("Some error occured. Please try again later.")
+                        b_area.html(save)
+                        b_area.append(cancel)
+                        save.prop("disabled",false)
+                        cancel.prop("disabled",false)
+                    }
+                })
+            })
+            b_area.html(save)
+            b_area.append(cancel)
+            main_body.html(pic_area)
+            main_body.append(b_area)
+            pic_area.fitImage(img,w,h,"both")
+            resize_factor = pic_area.children(".wi").val()/pic_area.children(".wo").val()
+            img.Jcrop({
+                aspectRatio: 1,
+                setSelect:   [ 0, 0, 183, 183 ],
+                allowSelect: false,
+                onChange: getCoords,
+                onSelect: getCoords
+            })
+        }
+                                    
+        function getCoords(c){
+            crop_x = c.x*resize_factor
+            crop_y = c.y*resize_factor
+            crop_x2 = c.x2*resize_factor
+            crop_y2 = c.y2*resize_factor
+            crop_w = c.w*resize_factor
+            crop_h = c.h*resize_factor
+        }
+<?php } ?>
+    $(document).ready(function(){
+        var bi = $("#wall").html(),wl,ph,vd
+        $("#inline_menu li").click(function(){
+            if($(this).hasClass("cur_tab")==false){
+                var cur_id = $(".cur_tab").attr("id")
+                $(".cur_tab").removeClass("cur_tab")
+                $(this).addClass("cur_tab")
+                var new_id = $(this).attr("id")
+                
+                if(cur_id=="wl"){
+                    wl = $("#wall").html()
+                }else if(cur_id=="ph"){
+                    ph = $("#wall").html()
+                }else if(cur_id=="vd"){
+                    vd = $("#wall").html()
+                }
+                
+                if(new_id=="bi"){
+                    $("#wall").html(bi)
+                }else if(new_id=="wl"){
+                    if(wl==null){
+                        $("#wall").html("")
+                        getUserFeed($("#wall"), 0, 20)
+                    }else{
+                        $("#wall").html(wl)
+                    }
+                }else if(new_id=="ph"){
+                    if(ph==null){
+                        $("#wall").html("")
+                        getUserAlbums($("#wall"), 0, 20)
+                    }else{
+                        $("#wall").html(ph)
+                    }
+                }else if(new_id=="vd"){
+                    if(vd==null){
+                        $("#wall").html("")
+                        alert("will call videos")
+                    }else{
+                        $("#wall").html(vd)
+                    }
+                }
+            }
+        })
+<?php
+if ($uid == $id) {
+    ?>
+                $("#cpp").width($("#profile_pic").width())
+                $("#profile_pic_div").hover(function(){
+                    $("#cpp").show()
+                },function(){
+                    $("#cpp").hide()
+                })
+    <?php
+}
+if ($uid != $id) {
+    ?>
+                $("#add_friend").click(function(){
+                    $.ajax({
+                        url:"manager/FriendManager.php",
+                        cache:false,
+                        type:"get",
+                        data:"req=add_friend&id="+user_id+"&uid="+puser_id,
+                        beforeSend:function(){
+                            $(this).prop('disabled', true)
+                        },
+                        success:function(html){
+                            if(html.length==1){
+                                $(this).removeProp('disabled')
+                                $(this).replaceWith('<input type="button" value="Cancel Friend Request" class="wbutton metd" id="cancel_friend_request">')
+                                return
+                            }else{
+                                alertBox("Some problem occured. Please try again later.")
+                                $(this).removeProp('disabled')
+                                return
+                            }
+                        },error:function(){
+                            alertBox("Some problem occured. Please try again later.")
+                            $(this).removeProp('disabled')
+                        }
+                    })
+                })
+<?php } ?>
+    })
+        </script>
+    </head>
+    <body style="height:100%;">
+        <?php
+        include "head_menu.html";
+        include "dock.html";
+        ?>
+        <div id="container" style="width:100%;height:100%">
+            <div id="basic">
+                <div id="profile_pic_div">
+                    <img src="<?php echo $pprofile_pic ?>" id="profile_pic">
+                    <?php
+                    if ($uid == $id) {
+                        ?>
+                        <div id="cpp">
+                            <input id="cpp_input" type="file" style="position:absolute;width:181px;height:45px;margin-top:-15px;cursor:pointer;opacity:0;" onchange="change_profile_pic()">
+                            <center>
+                                <span id="cpp_t">Change Profile Pic</span>
+                            </center>
+                        </div>
+                    <?php } ?>
+                </div>
+                <div id="menu_div">
+                    <ul id="menu" class="general_list">
+                        <li onclick="window.location.href='friends.php?id=<?php echo $uid ?>'">
+                            <img src="img/friendreq.png" width="20px">&nbsp;&nbsp;&nbsp;&nbsp;<span style="margin-top:-5px;">Friends</span>
+                        </li>
+                        <li>
+                            <img src="img/set.png" width="20px">&nbsp;&nbsp;&nbsp;&nbsp;<span style="margin-top:-10px;">Sets</span>
+                        </li>
+                        <li>
+                            <img src="img/interest.png" width="15px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="margin-top:-10px;">Interests</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div id="main">
+                <div id="name">
+                    <?php
+                    echo $pfirst_name . " " . $plast_name;
+                    ?>
+                </div>
+                <div id="inline_menu_div">
+                    <ul id="inline_menu" class="linear_list">
+                        <li class="cur_tab" id="bi">Basic Info</li>
+                        <li id="wl">Wall</li>
+                        <li id="ph">Photos</li>
+                        <li id="vd">Videos</li>
+                    </ul>
+                </div>
+                <div id="wall" style="width:100%;padding-top:20px;padding-left:10px;height:100%;">
+                    <div id="basic_info" style="padding-left:10px;">
+                        <div id="personal_info">
+                            <h2>Personal Info</h2>
+                            <table>
+                                <tr>
+                                    <td>Gender</td>
+                                    <td><?php echo $puser->getGender() ?></td>
+                                </tr>
+                                <tr>
+                                    <td>Born on</td>
+                                    <td><?php echo $puser->getDob() ?></td>
+                                </tr>
+                                <tr>
+                                    <td>Relationship status</td>
+                                    <td><?php
+                    if ($puser->getRel_status() == 1)
+                        echo "Single";
+                    else if ($puser->getRel_status() == 2)
+                        echo "Committed";
+                    else if ($puser->getRel_status() == 3)
+                        echo "Complicated";
+                    else if ($puser->getRel_status() == 4)
+                        echo "Married";
+                    else if ($puser->getRel_status() == 5)
+                        echo "Divorced";
+                    ?></td>
+                                </tr>
+                                <tr>
+                                    <td>Nick</td>
+                                    <td><?php echo $puser->getNick() ?></td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div id="contact_info">
+                            <h2>Contact Info</h2>
+                            <table>
+                                <tr>
+                                    <td>Email ID</td>
+                                    <td><?php echo $puser->getEmail_id() ?></td>
+                                </tr>
+                                <tr>
+                                    <td>Address</td>
+                                    <td><?php echo $puser->getAddress() ?></td>
+                                </tr>
+                                <tr>
+                                    <td>Contact Number</td>
+                                    <td><?php echo $puser->getPh_no() ?></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="side">
+
+            </div>
+        </div>
+        <script type="text/javascript" src="js/jquery-ui.js"></script>
+        <script type="text/javascript" src="js/jQueryRotate.js"></script>
+        <?php
+        if ($uid == $id) {
+            ?>
+            <script type="text/javascript" src="js/jquery.Jcrop.min.js"></script>
+            <link href="css/jquery.Jcrop.min.css" rel="stylesheet" type='text/css'>
+        <?php } ?>
+    </body>
+</html>

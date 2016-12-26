@@ -1,0 +1,487 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Feb 20, 2014, 4:38:40 AM
+    Author     : sankalp
+*/
+#filler{
+    padding-top:80px;
+    margin:0 auto;
+    width:95%;
+    height:100%;
+    padding-left:0;
+    padding-right:0; 
+    color:#444;
+}
+
+.dshadow{
+    border-radius:2px;
+    -webkit-box-shadow:  0 0 13px #666;
+    -moz-box-shadow:  0 0 13px #666;
+    box-shadow:  0 0 13px #666;
+    -o-box-shadow: 0 0 13px #666;
+}
+
+#feat_div{
+    display:table;
+    width:100%;
+    background:white;
+    margin-bottom:30px;
+}
+
+.feat{
+    display:none;
+    padding:20px;
+    background:#000;
+    opacity:0.9;
+    width:100%;
+    height:100%;
+    width:calc(100% - 2.5em);
+    height:calc(100% - 2.5em);
+    width:expression(100% - 2.5em);
+    height:expression(100% - 2.5em);
+    color:white;
+}
+
+.feats{
+  font-size:20px;
+}
+
+.ftitle{
+    font-size:25px;
+    font-weight:bold;
+}
+
+.ftitles{
+    font-size:20px;
+}
+
+.finfo{
+    margin-top:10px;
+    font-family:"Calibri";
+}
+
+#nmarea{
+    display:table-row;  
+    width:100%;
+}
+
+#nmarea ul li{
+    float:right;
+    margin:10px 10px;
+    font-size:20px;
+    color:#444;
+    font-family: "Calibri";
+}
+
+#tag_name{
+    font-size:50px;
+    font-weight:lighter;
+    margin-left:10px;
+    color:#444;
+    font-family:"Microsoft Yi Baiti";
+}
+
+.follow{
+    margin-top:10px;
+    width:100px;
+}
+
+#tarea{
+    width:100%;
+    height:430px;
+}
+
+#featarea{
+    float:left;
+    padding: 39px 40px;
+    width:65%;
+    width:calc(65% - 5em);
+    width:expression(65% - 5em);
+    height:100%;
+    height:calc(100% - 4.875em);
+    height:expression(100% - 4.875em);
+    background:#444;
+    -webkit-box-shadow: inset 0 0 90px rgba(0, 0, 0, 0.8);
+    -moz-box-shadow: inset 0 0 90px rgba(0, 0, 0, 0.8);
+    box-shadow: inset 0 0 90px rgba(0, 0, 0, 0.8);
+    -o-box-shadow:inset 0 0 90px rgba(0, 0, 0, 0.8);
+}
+
+.fcol{
+    float:left;
+    height:100%;
+}
+
+.fcol:first-of-type{
+    margin-right:2px;
+}
+
+.fcol:last-of-type{
+    margin-left:2px;
+}
+
+.poster{
+    -webkit-box-shadow: inset 0 0 79px rgba(0, 0, 0, 0.2), 0 0 15px rgba(0, 0, 0, 0.4);
+    -moz-box-shadow: inset 0 0 79px rgba(0, 0, 0, 0.2), 0 0 15px rgba(0, 0, 0, 0.4);
+    box-shadow: inset 0 0 79px rgba(0, 0, 0, 0.2), 0 0 15px rgba(0, 0, 0, 0.4);
+    position: relative;
+    background-size:cover;
+    background-repeat: no-repeat;
+    background-position: top;
+}
+
+#bposter{
+    width:100%;
+    height:100%;
+}
+
+#hposter{
+    width:100%;
+    margin-bottom:4px;
+}
+
+#sposter1,#sposter2{
+    float:left;
+    height:100%;
+}
+
+#sposter1{
+    margin-right:2px;
+}
+
+#sposter2{
+    margin-left:1px;
+}
+
+#otharea{
+    float:left;
+    width:35%;
+    border-bottom:1px solid #ccc;
+    height:100%;
+}
+
+.othpost{
+    padding:10px;
+    width:100%;
+    width:calc(100% - 1.245em);
+    width:expression(100% - 1.245em);
+    height:33.33%;
+    height:calc(33.33% - 1.375em);
+    height:expression(33.33% - 1.375em);
+    border-top:1px solid #ccc;
+    overflow:hidden;
+    background:white;
+
+    word-wrap: break-word;
+    word-break: break-all;
+}
+
+.ogrid{
+    height:100%;
+    float:left;
+}
+
+.oimg{
+    float:left;
+    margin-right:10px;
+    height:100%;
+    position: relative;
+    background-size:cover;
+    background-repeat: no-repeat;
+    background-position: top;
+    -webkit-box-shadow: inset 0 0 30px black;
+    -moz-box-shadow: inset 0 0 30px black;
+    box-shadow: inset 0 0 30px black;
+}
+
+.otitle{
+    /*font-family:"Calibri";*/
+    font-size:20px;
+    font-weight: bold;
+}
+
+.onews{
+    font-family:"Calibri";
+    font-size:15px;
+}
+
+#menu_bar{
+    display:table;
+    padding:15px 20px;
+    width:100%;
+    width:calc(100% - 2.5em);
+    width:expression(100% - 2.5em);
+}
+
+#arena{
+    width:100%;
+}
+
+#larena,#marena,#rarena{
+    float:left;
+}
+
+#larena{
+    width:36%;
+    width:calc(50% - .125em);
+    width:expression(50% - .125em);
+    border:1px solid #ddd;
+    border-top:0;
+}
+
+#marena,#rarena{
+    width:25%;
+    width:calc(25% - .0625em);
+    width:expression(25% - .0625em);
+    border:1px solid #ddd;
+    border-top:0;
+    border-left:0;
+}
+
+.header{
+    padding:15px 0;
+    width:100%;
+    border-bottom: 1px solid #e0e0e0;
+    border-top:1px solid #e0e0e0;
+    background:#f4f4f4;
+    color:black;
+    font-size:20px;
+}
+
+.header p{
+    margin-left:20px;
+}
+.header ul{
+    width:100%;
+}
+
+.header ul li{
+    width:50%;
+    padding:15px 12.5%;
+}
+
+.header ul li:hover{
+    cursor:pointer;
+    border-bottom:2px solid #007700;
+}
+
+.ctl{
+    background:#14b30e;
+    font-weight:bold;
+    border-bottom:2px solid #007e2d;
+    color:#fff;
+    -webkit-box-shadow: inset 0 0 30px #007e2d;
+    -moz-box-shadow: inset 0 0 30px #007e2d;
+    box-shadow: inset 0 0 30px #007e2d;
+}
+
+#parea,#pcararea{
+    width:100%;
+    background:white;
+}
+
+.pframe{
+    width:70%;
+    display:none;
+}
+
+.pslide{
+    width:100%;
+    background:#fafafa;
+    background-repeat: no-repeat;
+    background-size:cover;
+    background-position: top;
+    box-shadow: 0 0px 20px #444;
+    -o-box-shadow: 0 0px 20px #444;
+    -webkit-box-shadow: 0 0px 20px #444;
+    -moz-box-shadow: 0 0px 20px #444;   
+    -ms-filter: "progid:DXImageTransform.Microsoft.Shadow(color=#444,strength=20)";
+}
+
+.pnews{
+    padding:10px;
+    width:100%;
+    width:calc(100% - 1.25em);
+    width:expression(100% - 1.25em);
+    text-align: left;
+    color:#444;
+}
+
+.ptitle{
+    font-weight: lighter;
+}
+
+.pinfo{
+    font-family: "Calibri";
+    margin-top:5px;
+}
+
+.frame_index{
+    margin-top:10px;
+    display:table;
+}
+
+.index{
+    width:10px;
+    height:10px;
+    border-radius:50%;
+    background:#007dff;
+    float:left;
+    margin-right:10px;
+}
+
+.index:hover{
+    cursor:pointer;
+    background:#14b30e;
+}
+
+.cin{
+    display:block;
+}
+
+.cini{
+    background:#14b30e;
+}
+
+#tus,#rpo{
+    width:100%;   
+}
+
+.tu,.rp,.pl,.phl{
+    display:table;
+    padding:10px 20px;
+}
+
+.tname,.rpname,.plname{
+    width:100%;
+    width:calc(100% - 2.3em);
+    width:expression(100% - 2.3em);
+    float:left;
+    margin-left:10px;
+    font-size:20px;
+    font-weight:bold;
+}
+
+.pcircle,.ppic{
+    float:left;
+    width:30px;
+    height:30px;
+    border-radius:50%;
+}
+
+.pcircle{
+    border:3px solid white;
+    box-shadow: 0 0 4px #777;
+    -o-box-shadow: 0 0 4px #777;
+    -webkit-box-shadow: 0 0 4px #777;
+    -moz-box-shadow: 0 0 4px #777;
+}
+
+.rpsq,.plsq{
+    float:left;
+    width:50px;
+    height:50px;
+    -webkit-box-shadow: inset 0 0 30px black;
+    -moz-box-shadow: inset 0 0 30px black;
+    box-shadow: inset 0 0 30px black;
+    background-size:cover;
+    background-repeat: no-repeat;
+    background-position: top;
+}
+
+.rpname{
+    width:100%;
+    width:calc(100% - 3.55em);
+    width:expression(100% - 3.55em);
+}
+
+#plistarea{
+    width:100%;
+    margin-top:20px;
+}
+
+.plsq{
+    width:200px;
+    height:150px;
+}
+
+.plname{
+    font-size:30px;
+    font-weight:lighter;
+    width:100%;
+    width:calc(100% - 7em);
+    width:expression(100% - 7em);
+}
+
+.smallslide{
+    width:100%;
+    -webkit-box-shadow: inset 0 0 90px rgba(0, 0, 0, 0.8);
+    -moz-box-shadow: inset 0 0 90px rgba(0, 0, 0, 0.8);
+    box-shadow: inset 0 0 90px rgba(0, 0, 0, 0.8);
+    -o-box-shadow:inset 0 0 90px rgba(0, 0, 0, 0.8);
+    background-size:cover;
+    background-repeat: no-repeat;
+    background-position: top;
+}
+
+.ssliderlist{
+    margin-top:20px;
+}
+
+.sslidertype{
+    display:table;
+    padding:10px 20px;
+}
+
+.sslidertype:hover{
+    cursor:pointer;
+}
+
+.ssl{
+    width:100%;
+    width:calc(100% - 1.75em);
+    width:expression(100% - 1.75em);
+    font-weight:lighter;
+}
+
+.csslider{
+    color:#007dff;
+}
+
+.icon{
+    display:table;
+    float:left;
+}
+
+.icon img{
+    display:table-row;
+    vertical-align:middle;
+}
+
+.loader{
+    width:100%;
+    margin:0 auto;
+    text-align:center;
+    font-family:"Calibri";
+    font-size:15px;
+    border-top:1px solid #e0e0e0;
+    padding:10px 0;
+}
+
+.loader:hover{
+    cursor:pointer;
+    color:#007dff;
+}
+#assoctag{
+    display:table;
+    padding:10px 20px;
+}
+
+#mostposts li{
+    width:33.33%;
+    padding:15px 8.33%;   
+}

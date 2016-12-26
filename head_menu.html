@@ -1,0 +1,43 @@
+<!DOCTYPE HTML>
+<div id="head_menu">
+    <table>
+        <tr>
+            <td style="width:100px;">
+                <a href="index.php" style='border:0'><img src="img/small_logo.png" class="head_logo"></a>
+            </td>
+            <td style="width:10%;padding-left:30px;">
+                <span class="hm_op" id='cd' onclick='javascript:openCategoryMenu(this)'><img class="nicon" src="img/categories.png" style="width:20px;" title='Categories'></span>
+                <span class="hm_op" onclick='javascript:openRequestBox("pending")'><img class="nicon" src="img/friendreq.png" style="width:30px"></span>
+                <span class="hm_op" id='nd' style="margin-left:3px;"><img class="nicon" src="img/update.png" style="width:20px" title='Updates'></span>
+                <div id="update_list" class="top_arrow_box uni_shadow_lightest">
+                    <div id="ulist" style="width:100%;height:290px;overflow:auto;">
+                    </div>
+                    <div id="umore">
+                        See more...
+                    </div>
+                </div>
+            </td>
+            <td style="width:40%;">
+                <input type="search" id="nemo_search" placeholder="Search for people, interests & events">
+            </td>
+            <td style="width:130px;padding-left:100px;">
+                <button id="cm_initiator" onclick="scriptLoader('postCreator', 'postCreator', [[]], 1, this)" class="wbutton"><img src="img/add.png"><span style='font-family:Microsoft Yi Baiti;font-size:20px'>Create</span></button>
+            </td>
+            <td>
+                <div id="dd" class="wrapper-dropdown-5">
+                    <ul class='menu_dropdown' id='settings_menu'>
+                        <li id="vp">
+                            <a href='profile.php'>View Profile</a>
+                        </li>
+                        <li>
+                            <a href='settings.php'>Settings</a>
+                        </li>
+                        <li>
+                            <a href='logout.php'>Logout</a>
+                        </li>
+                    </ul>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>    

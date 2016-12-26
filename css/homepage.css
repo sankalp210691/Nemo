@@ -1,0 +1,192 @@
+/* 
+    Document   : homepage
+    Created on : Jun 14, 2013, 8:23:45 PM
+    Author     : Sankalp
+    Description:
+        Purpose of the stylesheet follows.
+*/
+#container{
+    padding-top:80px;
+}
+
+#sub_container{
+    width:100%;
+}
+
+#main_panel{
+    /*float:left;*/
+    width:100%;
+}
+
+#sub_header{
+    position:absolute;
+    width:77%;
+    height:35px;
+
+    background:white;
+    border-bottom: 1px solid #ccc;
+
+    -webkit-box-shadow:  0 1px 3px #ccc;
+    -moz-box-shadow: 0 1px 3px #ccc;
+    box-shadow:  0 1px 3px #ccc;
+    -o-box-shadow: 0 1px 3px #ccc;
+
+    z-index:10;
+}
+
+#wall_filter,#sh_options{
+    list-style: none;
+    margin:0;
+    padding:0;
+    margin-left:40px;
+    padding-top:5px;
+
+    font-family: arial;
+    font-size:18px;
+    color:#007dff;
+
+    height:100%;
+}
+
+#wall_filter li,#sh_options li{
+    display:inline;
+    margin:0;
+    padding:0;
+
+    padding:10px;
+    padding-left:20px;
+    padding-right:20px;
+}
+
+#wall_filter li:hover,#sh_options li:hover{
+    color:#14b30e;
+    cursor:pointer;
+}
+
+.in_tab,#wall{
+    background:#f8f8f8;
+}
+
+.in_tab{
+    border-bottom:3px solid #f8f8f8;
+
+    -webkit-box-shadow:inset 1px 3px 3px #aaa,inset -1px 3px 3px #aaa;
+    -moz-box-shadow:inset 1px 3px 3px #aaa,inset -1px 3px 3px #aaa;
+    box-shadow:inset 1px 3px 3px #aaa,inset -1px 3px 3px #aaa;
+    -o-box-shadow:inset 1px 3px 3px #aaa,inset -1px 3px 3px #aaa;
+}
+
+#sh_options{
+    float:right;
+}
+
+#wall{
+    width:100%;
+    overflow:auto;
+    margin-top:20px;
+    margin-left:20px;
+}
+
+#side_panel{
+    position:fixed;
+    float:left;
+    width:23%;
+    margin-left:77%;
+    background: white;
+
+    -webkit-box-shadow:  -1px 0 3px #aaa;
+    -moz-box-shadow:  -1px 0 3px #aaa;
+    box-shadow:  -1px 0 3px #aaa;
+    -o-box-shadow: -1px 0 3px #aaa;
+}
+
+/*create post begins*/
+#pc_left_panel{
+    float:left;
+    width:21%;
+    height:100%;
+
+    /*    -webkit-box-shadow: 3px 0 5px #ccc;
+        -moz-box-shadow: 3px 0 5px #ccc;
+        box-shadow: 3px 0 5px #ccc;
+        -o-box-shadow: 3px 0 5px #ccc;*/
+}
+
+#pc_options{
+    list-style: none;
+    margin:0;
+    padding:0;
+    margin-top:10px;
+}
+
+#pc_options li{
+    padding-top:5px;
+    padding-bottom:5px;
+    padding-left:10px;
+}
+
+#pc_right_panel{
+    float:left;
+    width:75.7%;
+    height:90%;
+    margin-left:5px;
+    padding-left:20px;
+    overflow:auto;
+
+    -webkit-box-shadow:inset 3px -3px 5px #ccc;
+    -moz-box-shadow: inset 3px -3px 5px #ccc;
+    box-shadow: inset 3px -3px 5px #ccc;
+    -o-box-shadow: inset 3px -3px 5px #ccc;
+}
+
+.pc_top{
+    margin-top:10px;
+    padding:5px;
+    padding-right:0;
+    width:97%;
+    background:white;
+
+    -webkit-box-shadow:  0 0 8px #aaa;
+    -moz-box-shadow:  0 0 8px #aaa;
+    box-shadow:  0 0 8px #aaa;
+    -o-box-shadow: 0 0 8px #aaa;
+}
+
+.pc_uploader{
+    margin-top:10px;
+    width:97%;
+    height:100%;
+    background:white;
+    border:3px dashed #5096FF;
+
+    -webkit-box-shadow:  0 0 8px #aaa;
+    -moz-box-shadow:  0 0 8px #aaa;
+    box-shadow:  0 0 8px #aaa;
+    -o-box-shadow: 0 0 8px #aaa;
+}
+
+.pc_status{
+    resize:none;
+    width:97%;
+    height:30px;
+    border:0;
+    margin-left:5px;
+    margin-top:3px;
+}
+
+.pc_status:focus{
+    border:0;
+
+    -webkit-box-shadow:  0 0 0 white;
+    -moz-box-shadow:  0 0 0 white;
+    box-shadow: 0 0 0 white;
+    -o-box-shadow: 0 0 0 white;
+}
+
+.pc_op{
+    float:right;
+    width:80px;
+    margin-right:10px;
+    margin-top:10px;
+}
+/*create post ends*/

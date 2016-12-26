@@ -1,0 +1,36 @@
+<!DOCTYPE HTML>
+<div id="head_menu">
+    <table>
+        <tr>
+            <td style="width:100px;">
+                <img src="img/small_logo.png" class="head_logo">
+            </td>
+            <td style="width:80px;padding-left:30px;">
+                <span class="hm_op" onclick='javascript:openRequestBox("pending")'><img src="img/friendreq.png" style="width:30px"></span>
+                <span class="hm_op" style="margin-left:5px;"><img src="img/update.png" style="width:20px" onclick='showUpdates()'></span>
+                <div id="update_list" class="top_arrow_box open_menu uni_shadow_lightest">
+                	<div id="ulist" style="width:100%;height:290px;overflow:auto;">
+                	</div>
+                	<div id="umore">
+                		See more...
+                	</div>
+                </div>
+            </td>
+            <td>
+                <input type="search" id="nemo_search" placeholder="Search for people, interests & events">
+            </td>
+            <td style="width:130px;">
+                <span class="hm_op open_menu" id="cm_initiator" onclick='createMenu(this)'><img src="img/add.png"><span style='font-family:Microsoft Yi Baiti;font-size:20px'>Create</span></span>
+                <ul class='dropdown top_arrow_box open_menu' id='create_menu'>
+                    <li onclick="scriptLoader('postCreator','postCreator',[[]],1,this)">
+                        Create Post
+                    </li>
+                    <li onclick="scriptLoader('setCreator','setCreator',[[]],1,this)">
+                        Create Set
+                    </li>
+                </ul>
+            </td>
+            <td class="user_drop_down"></td>
+        </tr>
+    </table>
+</div>    

@@ -1,0 +1,249 @@
+<?php
+session_start();
+$set_id = trim(stripslashes(preg_replace("/#.*?\n/", "\n", preg_replace("/\/*.*?\*\//", "", preg_replace("/\/\/.*?\n/", "\n", preg_replace("/<!--.*?-->/", "", str_replace('"', "", str_replace("'", "", $_GET["id"]))))))));
+if (strpos($set_id, ".") != false) {
+    header("location:badpage.html");
+    return;
+}
+if (is_numeric($set_id) == false) {
+    header("location:badpage.html");
+    return;
+}
+if ($set_id < 1) {
+    header("location:badpage.html");
+    return;
+}
+if (!isset($_SESSION['id'])) {
+    header("location:pubPr.php?id=$uid");
+    return;
+}
+$id = $_SESSION["id"];
+$_SESSION["id"] = $id;
+//Keep the above part same, everywhere
+//include "SpecialFunctions.php";
+require "db/DBConnect.php";
+include "model/UserModel.php";
+include "controller/UserController.php";
+include "model/FriendModel.php";
+include "controller/FriendController.php";
+include "model/PostModel.php";
+include "controller/PostController.php";
+include "model/SetsModel.php";
+include "controller/SetsController.php";
+include "supporter/SetsSupporter.php";
+include "model/Set_followerModel.php";
+include "controller/Set_followerController.php";
+include "supporter/Set_followerSupporter.php";
+
+$usrcon = new UserController();
+$db_connection = new DBConnect("mysqli", "nemo", "", "", "");
+$persistent_connection = $db_connection->getCon();
+$user = $usrcon->getByPrimaryKey($id, array("first_name", "last_name", "profile_pic"), null, $persistent_connection);
+$first_name = $user->getFirst_name();
+$last_name = $user->getLast_name();
+$profile_pic = $user->getProfile_pic();
+if ($profile_pic == null || strlen($profile_pic) == 0) {
+    $profile_pic = "img/default_profile_pic.jpg";
+}
+$blur_profile_pic = substr($profile_pic, 0, strrpos($profile_pic, "/")) . "/blur_" . substr($profile_pic, strrpos($profile_pic, "/") + 1);
+
+$setcon = new SetsController();
+$set = $setcon->getByPrimaryKey($set_id, array("user_id", "name", "description", "followers", "rating", "views", "privacy"), null, $persistent_connection);
+if ($set->getUser_id() == $id) {
+    $self = 1;
+    $post = new Post();
+    $post->setSet_id($set_id);
+    $postscon = new PostController();
+    $posts = $postscon->findByAll($post, array("*"), "order by id desc", $persistent_connection);
+} else {
+    $self = 0;
+    $decArray = areFriends($id, $set->getUser_id());
+    if ($decArray[0] == true && $decArray[1] == 1) {
+        $post = new Post();
+        $post->setSet_id($set_id);
+        $postscon = new PostController();
+        $posts = $postscon->findByAll($post, array("*"), "order by id desc", $persistent_connection);
+        $posts_size = sizeof($posts);
+    } else {
+        $post = new Post();
+        $post->setSet_id($set_id);
+        $post->setPrivacy(0);
+        $postscon = new PostController();
+        $posts = $postscon->findByAll($post, array("*"), "order by id desc", $persistent_connection);
+        $posts_size = sizeof($posts);
+    }
+}
+$posts_size = sizeof($posts);
+$post_array = array();
+if ($posts_size > 0) {
+    $puser = new User();
+    $pusercon = new UserController();
+    $puser = $pusercon->getByPrimaryKey($posts[0]->getUser_id(), array("first_name", "last_name", "profile_pic"), null, $persistent_connection);
+
+    for ($i = 0; $i < $posts_size; $i++) {
+        $post_array[$i] = array(
+            "id" => $posts[$i]->getId(),
+            "set_id" => $posts[$i]->getSet_id(),
+            "user_id" => $posts[$i]->getUser_id(),
+            "postType" => $posts[$i]->getType(),
+            "title" => $posts[$i]->getTitle(),
+            "description" => $posts[$i]->getDescription(),
+            "src" => $posts[$i]->getSrc(),
+            "width" => $posts[$i]->getWidth(),
+            "height" => $posts[$i]->getHeight(),
+            "privacy" => $posts[$i]->getPrivacy(),
+            "date" => $posts[$i]->getDate(),
+            "time" => $posts[$i]->getTime(),
+            "likes" => $posts[$i]->getLikes(),
+            "shares" => $posts[$i]->getShares(),
+            "comments" => $posts[$i]->getComments(),
+            "sharable" => $posts[$i]->getSharable(),
+            "first_name" => $puser->getFirst_name(),
+            "last_name" => $puser->getLast_name(),
+            "profile_pic" => $puser->getProfile_pic()
+        );
+    }
+}
+$followers = getFollowers($set_id, $persistent_connection);
+$db_connection->mysqli_connect_close();
+?>
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link href="css/special.css" rel="stylesheet">
+        <link href='http://fonts.googleapis.com/css?family=Rancho' rel='stylesheet' type='text/css'>
+        <script src="js/jquery-latest.js"></script>
+        <script src="js/jquery-ui.js"></script>
+        <script src="js/special.js"></script>
+        <title><?php echo $set->getName() ?></title>
+        <style>
+            #set_header{
+                display:table;
+                background:white;
+                width:100%;
+                padding-left:40px;
+                padding-top:60px;
+                border-bottom:1px solid #ccc;
+                word-spacing: -5px;
+
+                box-shadow: 0 2px 2px  #eee;
+                -o-box-shadow: 0 2px 2px  #eee;
+                -webkit-box-shadow: 0 2px 2px  #eee;
+                -moz-box-shadow: 0 2px 2px  #eee;
+            }
+
+            #stats{
+                font-weight: bold;
+                color:#444;
+            }
+
+            .stat{
+                float:left;
+                margin-right:10px;
+            }
+
+            #follower_list{
+                width:400px;
+                float:right;
+                height:65px;
+            }
+
+            .flc{
+                width:35px;
+                height:70px;
+                float:right;
+            }
+
+            .flc img{
+                width:100%;
+                height:35px;
+            }
+
+            #set_area{
+                width:100%;
+                padding-left:40px;
+            }
+        </style>
+        <script type="text/javascript">
+            var user_id="<?php echo $id ?>"
+            var user_name = "<?php echo $first_name . ' ' . $last_name ?>"
+            var profile_pic = "<?php echo $profile_pic ?>"
+            var blur_profile_pic = $("<img>")
+            blur_profile_pic.attr({
+                "src":"<?php echo $blur_profile_pic ?>"
+            })
+            $(document).ready(function(){
+            	var data = []
+            	<?php
+            		for($i=0;$i<$posts_size;$i++){
+            			$j = json_encode($post_array[$i]);
+            			if(strlen($j)!=0)
+	            			echo "data[$i] = ".json_encode($post_array[$i]).";\n";
+            		}
+            	?>
+                var data_length = data.length,i
+                for(i=0;i<data_length;i++){
+                    var post = new PostTile(data[i])
+                    post.arrangeTile($("#set_area"),4,"append")
+                }
+                $("#rating").addRatingWidget(5)
+            })
+        </script>
+    </head>
+    <body>
+        <?php
+        include "head_menu.html";
+        include "dock.html";
+        ?>
+        <div id="container">
+            <div id="set_header">
+                <div id="follower_list">
+                    <?php
+                    $followers_size = sizeof($followers);
+                    for ($i = 0; $i < $followers_size; $i+=2) {
+                        ?>
+                        <div class="flc">
+                            <a href="profile.php?id=<?php echo $followers[$i]["id"] ?>" style="border:0;"><img src="<?php echo $followers[$i]["profile_pic"] ?>" title="<?php echo $followers[$i]["name"] ?>"></a>
+                            <?php
+                            if ($i + 1 < $followers_size) {
+                                ?>
+                                <a href="profile.php?id=<?php echo $followers[$i + 1]["id"] ?>" style="border:0;"><img src="<?php echo $followers[$i + 1]["profile_pic"] ?>" title="<?php echo $followers[$i]["name"] ?>"></a>
+                            <?php } ?>
+                        </div>
+                        <?php
+                    }
+                    ?>
+                </div>
+                <h1 style="color:#444"><?php echo $set->getName() ?></h1>
+                <div id="stats">
+                    <div class="stat">
+                        <table>
+                            <tr>
+                                <td><img src="img/black_view.png" style="width:20px;"></td>
+                                <td><span style="font-size:20px;margin-left:3px;"><?php echo $set->getViews() ?></span></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="stat">
+                        <table>
+                            <tr>
+                                <td><img src="img/black_view.png" style="width:20px;"></td>
+                                <td><span style="font-size:20px;margin-left:3px;"><?php echo $set->getFollowers() ?></span></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="stat">
+                        <table>
+                            <tr>
+                                <td><div id="rating" style="margin-left:-5px;margin-top:5px;height:30px;display:table;"><input type="hidden" value="<?php echo round($set->getRating(), 2) ?>"></div></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div id="set_area"></div>
+        </div>
+        <script type="text/javascript" src="js/jquery.masonry.min.js"></script>
+    </body>
+</html>
